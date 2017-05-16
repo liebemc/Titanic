@@ -1,1 +1,6 @@
-# Titanic
+
+public class Board 
+{
+	static final int w = 6;
+	static final int h = 6;
+}
