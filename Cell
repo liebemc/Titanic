@@ -1,6 +1,6 @@
 
 public class Cell 
 {
-	static final int w = 10;
-	static final int h = 10;
+	static final int w = 50;
+	static final int h = 50;
 }
