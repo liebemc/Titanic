@@ -8,8 +8,8 @@ import java.awt.event.MouseEvent;
  
 public class Block extends JPanel implements MouseListener, MouseMotionListener
 {
-	static final int x = 0; // direction for moving
-	static final int y = 1; // direction for moving
+	static final int xaxis = 0; // direction for moving
+	static final int yaxis = 1; // direction for moving
 	int direction = -1;
 	
 	Point start = new Point(); // start place
@@ -47,7 +47,7 @@ public class Block extends JPanel implements MouseListener, MouseMotionListener
 	{
 		start = e.getPoint(); // start point
 		prev = e.getPoint(); // previous point
-		int move = -1; // direction moving
+		direction = -1; // direction moving
 		
 		java.awt.Rectangle rect = this.getBounds();
 		
@@ -64,12 +64,78 @@ public class Block extends JPanel implements MouseListener, MouseMotionListener
 	public void mouseClicked(MouseEvent e) {} // records when the mouse button clicked on a component
 	public void mouseMoved(MouseEvent e) {} // records when the mouse cursor has been moved onto a component
 	
-	public void mouseDragged(MouseEvent e) 
+	public void mouseDragged(MouseEvent e) // records when the mouse button is dragged
 	{
+		int mx = e.getX() - prev.x;
+		int my = e.getY() - start.y;
+		prev = e.getPoint();
 		
+		mx = e.getX() - start.x;
+		my = e.getY() - start.y;
+		
+		int x = this.getX();
+		int y = this.getY();
+		
+		if(Math.abs(mx) < 5 && Math.abs(my) < 5) // make sure the movement is big enough for determining the moving axis
+			return;
+		
+		if(Math.abs(mx) > Math.abs(my) && direction != yaxis) // can only move on the same axis that you started moving on
+		{
+			for(int m = 0; m < Math.abs(mx); m++)
+				if(movable(mx / Math.abs(mx), 0));
+				{
+					x += mx / Math.abs(mx);
+					direction = xaxis;
+					this.setLocation(x, y);
+				}
+		}
+		
+		if(this.getX() % Cell.w == 0 && this.getY() % Cell.h == 0) // allow to turn
+			direction = -1;
+	}
+	
+	public boolean movable(int mx, int my)
+	{
+		int x = this.getX();
+		int y = this.getY();
+		int r = this.getHeight() / Cell.h;
+		int c = this.getWidth() / Cell.w;
+		
+		x += mx;
+		y = my;
+		
+		double xRound = Math.round(x / (double)(Cell.w));
+		double yRound = Math.round(y / (double)(Cell.h));
+		
+		double xFloor = Math.floor(x / (double)(Cell.w));
+		double yFloor = Math.floor(y / (double)(Cell.h));
+		
+		double xCeil = Math.ceil(x / (double)(Cell.w));
+		double yCeil = Math.ceil(y / (double)(Cell.h));
+		
+		int neew = (int)xRound; // new positions
+		int neww = (int)yRound; // on the board
+		
+		if(mx < 0)
+			neew = (int)xFloor;
+		if(mx > 0)
+			neew = (int)xCeil;
+		
+		if(my < 0)
+			neww = (int)yFloor;
+		if(my > 0)
+			neww = (int)yCeil;
+		
+		if(neew < 0 || neww < 0) // check boundary
+			return false;
+		if(neew + c - 1 >= Board.w || neww + r - 1 >= Board.h)
+			return false;
+		
+		for(int m = 0; m < c; m++)
+			for(int d = 0; d < r; d++)
+				if(BlockList.occupied[neew + 1][neww + 1]) // make sure the space is not occupied
+					return false;
+		
+		return true;
 	}
 }
-
-
-
-
