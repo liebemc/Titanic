@@ -1,1 +1,10 @@
-# Titanic
+import java.awt.Color;
+import java.awt.Rectangle;
+
+public interface BlockList
+{
+	 boolean[][] occupied = new boolean[Board.w][Board.h];
+	 Block[] blocks;
+	 
+	 void rebuildOccupancy();
+}
