@@ -1,1 +1,6 @@
-# Titanic
+
+public class Cell 
+{
+	static final int w = 10;
+	static final int h = 10;
+}
