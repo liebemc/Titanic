@@ -1,0 +1,75 @@
+import javax.swing.JPanel;
+import java.awt.Point;
+import java.awt.Color;
+import javax.swing.BorderFactory;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseEvent;
+ 
+public class Block extends JPanel implements MouseListener, MouseMotionListener
+{
+	static final int x = 0; // direction for moving
+	static final int y = 1; // direction for moving
+	int direction = -1;
+	
+	Point start = new Point(); // start place
+	Point prev = new Point(); // previous place
+	
+	public Block(int x, int y, int w, int h, Color c)
+	{
+		JPanel panel = this;
+		
+		panel.setBackground(c);
+		panel.setBorder(BorderFactory.createRaisedBevelBorder());
+		panel.setBounds(x * Cell.w, y * Cell.h, w * Cell.w, h * Cell.h);
+		
+		panel.addMouseListener(this); // reads the mouse 
+		panel.addMouseMotionListener(this); // reads the mouse motions
+	}
+	
+	public void mouseExited(MouseEvent e) {} // records when the mouse exits a component
+	public void mouseEntered(MouseEvent e) {} // records when the mouse enters a component
+	public void mouseReleased(MouseEvent e)  // records when the mouse button is released on a component
+	{
+		int x = this.getX();
+		int y = this.getY();
+		double xRound = Math.round(x / (double)(Cell.w));
+		double yRound = Math.round(y / (double)(Cell.h));
+		
+		x = (int)(xRound * Cell.w);
+		y = (int)(yRound * Cell.h);
+		
+		this.setLocation(x, y);
+		BlockList.rebuildOccupancy();
+	}
+	
+	public void mousePressed(MouseEvent e) // records when the mouse button is pressed on a component
+	{
+		start = e.getPoint(); // start point
+		prev = e.getPoint(); // previous point
+		int move = -1; // direction moving
+		
+		java.awt.Rectangle rect = this.getBounds();
+		
+		int xx = rect.x / Cell.w;
+		int yy = rect.y / Cell.h;
+		int width = rect.width / Cell.w;
+		int height = rect.height / Cell.h;
+		
+		for(int m = xx; m < xx + width; m++)
+			for(int d = yy; d < yy + height; d++)
+				BlockList.occupied[m][d] = false;
+	}
+	
+	public void mouseClicked(MouseEvent e) {} // records when the mouse button clicked on a component
+	public void mouseMoved(MouseEvent e) {} // records when the mouse cursor has been moved onto a component
+	
+	public void mouseDragged(MouseEvent e) 
+	{
+		
+	}
+}
+
+
+
+
